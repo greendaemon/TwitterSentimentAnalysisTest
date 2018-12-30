@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <context:component-scan base-package="com.jl.dae.twitterDataStream"/>
+
+    <bean id="oathToken" class="com.twitter.hbc.httpclient.auth.OAuth1">
+        <constructor-arg index="0" value=""/>
+        <constructor-arg index="1" value=""/>
+        <constructor-arg index="2" value=""/>
+        <constructor-arg index="3" value=""/>
+    </bean>
+
+    <util:list id="newYorkTopicList" value-type="java.lang.String">
+        <value>#NY</value>
+        <value>#New York</value>
+    </util:list>
+
+    <util:list id="losAngelesTopicList" value-type="java.lang.String">
+        <value>#Los Angeles</value>
+        <value>#LA</value>
+    </util:list>
+
+    <bean id="nyTwitterClient" class="com.jl.dae.twitterDataStream.client.TwitterFollowingStreamClient" destroy-method="disconnect">
+        <property name="authentication" ref="oathToken"/>
+        <property name="followString" ref="newYorkTopicList"/>
+    </bean>
+
+    <bean id="laTwitterClient" class="com.jl.dae.twitterDataStream.client.TwitterFollowingStreamClient" destroy-method="disconnect">
+        <property name="authentication" ref="oathToken"/>
+        <property name="followString" ref="losAngelesTopicList"/>
+    </bean>
+
+    <bean id="sentimentAnalysis" class="com.jl.dae.twitterDataStream.analysis.SentimentAnalysis"/>
+
+    <bean id="mongoDbManager" class="com.jl.dae.twitterDataStream.db.MongoDbManager"/>
+</beans>
